@@ -1,0 +1,55 @@
+{
+  "name": "curly-goggles",
+  "devDependencies": {
+    "babel": ">=5.5.5",
+    "babel-core": "^5.8.24",
+    "babel-eslint": "^6.0.5",
+    "babel-loader": "^5.3.2",
+    "babelify": ">=6.1.2",
+    "browserify": ">=10.2.4",
+    "deep-freeze": "0.0.1",
+    "dragula": ">=3.6.6",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.9.2",
+    "eslint-plugin-jsx-a11y": "^1.5.3",
+    "eslint-plugin-react": "^5.2.2",
+    "expect": "^1.20.1",
+    "filesaver.js": ">=0.2.0",
+    "mocha": ">=2.2.5",
+    "papaparse": ">=4.1.2",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-devtools": "^3.3.1",
+    "should": ">=7.0.2",
+    "watchify": ">=3.2.2",
+    "webpack": "^1.12.1"
+  },
+  "dependencies": {
+    "react": "^15.1.0",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "^15.1.0",
+    "webpack-dev-server": "^1.14.0"
+  },
+  "version": "0.1.0",
+  "description": "Freeform survey response processing for humans.",
+  "main": "",
+  "scripts": {
+    "start": "webpack-dev-server --content-base ./",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nesciosquid/curly-goggles.git"
+  },
+  "keywords": [
+    "forms"
+  ],
+  "author": "Aaron W. Heuckroth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nesciosquid/curly-goggles/issues"
+  },
+  "homepage": "https://github.com/Nesciosquid/curly-goggles#readme"
+}
