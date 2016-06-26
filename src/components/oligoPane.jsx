@@ -9,26 +9,28 @@ export class OligoPane extends React.Component {
   handleChange(event) {
     this.context.store.dispatch({
       type: 'SET_OLIGOS',
-      oligos: event.target.value,
+      oligos: event.target.value.toUpperCase(),
     });
-
-    console.log(this.context.store.getState());
-    /*
-    this.setState({
-      value: event.target.value,
-    });
-    */
   }
 
   render() {
     const style = {
+      padding: '20px',
       border: '1px solid black',
+      borderRadius: '5px',
+      marginBottom: '20px',
+      marginTop: '20px',
     };
+
+    const inputStyle = {
+      width: '100%',
+    };
+
     return (
       <div style={style} className={'four columns'}>
         <h3>{this.props.title}</h3>
-        <input
-          type={'text'}
+        <textArea
+          style={inputStyle}
           defaultValue={this.props.value}
           onChange={this.handleChange}
         />

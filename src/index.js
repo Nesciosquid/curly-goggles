@@ -19,4 +19,6 @@ const render = () => {
 };
 
 store.subscribe(render);
-render();
+store.dispatch({
+  type: 'UPDATE_RESULT',
+});

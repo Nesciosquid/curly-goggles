@@ -1,19 +1,27 @@
 import { cutSeqWithOligo } from '../sequenceOperations.js';
+const updateResult = (state) => {
+  const result = cutSeqWithOligo(state.sequence, state.oligos);
+  return Object.assign({}, state, { result });
+};
 
 const setOligos = (state, newOligos) => {
-  const result = cutSeqWithOligo(state.sequence, newOligos);
-  return Object.assign({}, state, { oligos: newOligos, result });
+  const newState = Object.assign({}, state, { oligos: newOligos });
+  return updateResult(newState);
 };
 
 const setSequence = (state, newSequence) => {
-  const result = cutSeqWithOligo(newSequence, state.oligos);
-  return Object.assign({}, state, { sequence: newSequence, result });
+  const newState = Object.assign({}, state, { sequence: newSequence });
+  return updateResult(newState);
 };
 
 const initState = {
   oligos: 'ATGC',
   sequence: 'ACCTTGATGCGGCGAT',
-  result: {},
+  result: {
+    cuts: 0,
+    time: 0,
+    fragments: [],
+  },
 };
 
 export const AppReducer = (state = initState, action) => {
@@ -22,6 +30,8 @@ export const AppReducer = (state = initState, action) => {
       return setOligos(state, action.oligos);
     case ('SET_SEQUENCE'):
       return setSequence(state, action.sequence);
+    case ('UPDATE_RESULT'):
+      return updateResult(state);
     default:
       return state;
   }

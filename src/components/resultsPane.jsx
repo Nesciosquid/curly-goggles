@@ -3,28 +3,28 @@ import React from 'react';
 export class ResultsPane extends React.Component {
   render() {
     const style = {
+      padding: '20px',
       border: '1px solid black',
+      borderRadius: '5px',
     };
 
     const fragments = [];
-
-    console.log(this.props);
-
     this.props.fragments.forEach((fragment, index) => {
       fragments.push(
-        <li>
-          <span>Fragment {index}: </span>
-          <span>{fragment}</span>
+        <li key={fragment + index}>
+          <span>{fragment.length}</span>
         </li>
       );
     });
 
     return (
-      <div style={style} className={'two columns'}>
+      <div style={style} className={'twelve columns'}>
         <h3>{this.props.title}</h3>
-        <span>Cuts: {this.props.cuts}</span>
-        <span>Time: {this.props.time}</span>
         <ul>
+          <li>Cuts: {this.props.cuts}</li>
+          <li>Time: {this.props.time}</li>
+        </ul>
+        <ul>Fragments:
           {fragments}
         </ul>
       </div>
@@ -34,7 +34,7 @@ export class ResultsPane extends React.Component {
 
 ResultsPane.propTypes = {
   title: React.PropTypes.string,
-  time: React.PropTypes.string,
+  time: React.PropTypes.number,
   cuts: React.PropTypes.number,
   fragments: React.PropTypes.array,
 };
