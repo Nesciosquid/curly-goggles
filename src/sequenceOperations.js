@@ -22,7 +22,6 @@ export const getReverseComplement = (sequence) => {
 };
 
 export const findAllOligoIndices = (sequence, oligo) => {
-  console.log(oligo);
   if (oligo === '' || sequence === '') {
     return [];
   }

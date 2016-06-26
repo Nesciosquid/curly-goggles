@@ -22,3 +22,18 @@ store.subscribe(render);
 store.dispatch({
   type: 'UPDATE_RESULT',
 });
+
+const getRandomChar = (possible) =>
+  (possible.charAt(Math.floor(Math.random() * possible.length)));
+const getRandomString = (possible, length) => {
+  let temp = '';
+  for (let i = 0; i < length; i++) {
+    temp += getRandomChar(possible);
+  }
+  return temp;
+};
+const randomSeq = getRandomString('ACTG', 500);
+store.dispatch({
+  type: 'SET_SEQUENCE',
+  sequence: randomSeq,
+});

@@ -81,6 +81,22 @@
 	  type: 'UPDATE_RESULT'
 	});
 
+	var getRandomChar = function getRandomChar(possible) {
+	  return possible.charAt(Math.floor(Math.random() * possible.length));
+	};
+	var getRandomString = function getRandomString(possible, length) {
+	  var temp = '';
+	  for (var i = 0; i < length; i++) {
+	    temp += getRandomChar(possible);
+	  }
+	  return temp;
+	};
+	var randomSeq = getRandomString('ACTG', 500);
+	store.dispatch({
+	  type: 'SET_SEQUENCE',
+	  sequence: randomSeq
+	});
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -22019,10 +22035,13 @@
 	  _createClass(OligoPane, [{
 	    key: 'handleChange',
 	    value: function handleChange(event) {
-	      this.context.store.dispatch({
-	        type: 'SET_OLIGOS',
-	        oligos: event.target.value.toUpperCase()
-	      });
+	      var oligo = event.target.value.toUpperCase();
+	      if (oligo.length >= 3) {
+	        this.context.store.dispatch({
+	          type: 'SET_OLIGOS',
+	          oligos: oligo
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -22274,7 +22293,6 @@
 
 	exports.getReverseComplement = getReverseComplement;
 	var findAllOligoIndices = function findAllOligoIndices(sequence, oligo) {
-	  console.log(oligo);
 	  if (oligo === '' || sequence === '') {
 	    return [];
 	  }
