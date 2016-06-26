@@ -7,10 +7,13 @@ export class OligoPane extends React.Component {
   }
 
   handleChange(event) {
-    this.context.store.dispatch({
-      type: 'SET_OLIGOS',
-      oligos: event.target.value.toUpperCase(),
-    });
+    const oligo = event.target.value.toUpperCase();
+    if (oligo.length >= 3) {
+      this.context.store.dispatch({
+        type: 'SET_OLIGOS',
+        oligos: oligo,
+      });
+    }
   }
 
   render() {
