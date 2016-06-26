@@ -36,7 +36,7 @@
   "description": "Freeform survey response processing for humans.",
   "main": "",
   "scripts": {
-    "start": "webpack-dev-server --content-base ./",
+    "start": "webpack-dev-server --content-base ./ --host 0.0.0.0",
     "build": "webpack"
   },
   "repository": {
