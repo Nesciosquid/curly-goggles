@@ -15,7 +15,7 @@ const setSequence = (state, newSequence) => {
 };
 
 const initState = {
-  oligos: 'ATGC',
+  oligos: 'ATG',
   sequence: 'ACCTTGATGCGGCGAT',
   result: {
     cuts: 0,

@@ -23,10 +23,12 @@ export class OligoPane extends React.Component {
       borderRadius: '5px',
       marginBottom: '20px',
       marginTop: '20px',
+      height: 'auto',
     };
 
     const inputStyle = {
       width: '100%',
+      resize: 'none',
     };
 
     return (

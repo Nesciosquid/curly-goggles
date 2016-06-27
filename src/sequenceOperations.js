@@ -41,6 +41,12 @@ const doAreasOverlap = (highlightA, highlightB) => {
   } return false;
 };
 
+const isInHighlight = (highlight, index) => {
+  if (highlight.start <= index && highlight.end >= index) {
+    return true;
+  } return false;
+};
+
 const condenseHighlights = (highlights) => {
   const condensed = [];
   let last;
@@ -63,16 +69,17 @@ export const getHighlghtedAreas = (sequence, oligo) => {
   indices.forEach(index => {
     forwardHighlightedAreas.push({
       start: index,
-      end: index + oligo.length,
+      end: index + oligo.length - 1,
     });
   });
   reverseIndices.forEach(index => {
     reverseHighlightedAreas.push({
       start: index,
-      end: index + oligo.length,
+      end: index + oligo.length - 1,
     });
   });
   const condensedForward = condenseHighlights(forwardHighlightedAreas);
+
   const condensedReverse = condenseHighlights(reverseHighlightedAreas);
   return {
     forward: condensedForward,
@@ -80,35 +87,68 @@ export const getHighlghtedAreas = (sequence, oligo) => {
   };
 };
 
+export const getHighlightStatus = (index, forward, rev) => {
+  let f = false;
+  let r = false;
+  if (forward) {
+    forward.forEach((highlight) => {
+      if (isInHighlight(highlight, index)) {
+        f = true;
+      }
+    });
+  }
+  if (rev) {
+    rev.forEach((highlight) => {
+      if (isInHighlight(highlight, index)) {
+        r = true;
+      }
+    });
+  }
+  return {
+    forward: f,
+    reverse: r,
+  };
+};
+
+export const statusesAreEqual = (stat1, stat2) => (
+  (stat1 && stat2 && stat1.forward === stat2.forward
+    && stat1.reverse === stat2.reverse)
+);
+
 export const getHightlightStrings = (sequence, oligo) => {
   const highlights = getHighlghtedAreas(sequence, oligo);
-  let currentIndex = 0;
+  let curStart = 0;
+  let curStatus = undefined;
   const highStrings = [];
-  highlights.forward.forEach(highlight => {
-    if (highlight.start > currentIndex) {
-      highStrings.push({
-        seq: sequence.slice(currentIndex, highlight.start),
-        highlight: 'none',
-      });
-      currentIndex = highlight.start;
+
+  for (let i = 0; i < sequence.length; i++) {
+    const newStat =
+      getHighlightStatus(i, highlights.forward, highlights.reversed);
+    if (!statusesAreEqual(curStatus, newStat)) {
+      if (curStatus) {
+        const curString = sequence.slice(curStart, i);
+        highStrings.push({
+          seq: curString,
+          forward: curStatus.forward,
+          reverse: curStatus.reverse,
+        });
+      }
+      curStart = i;
     }
-    highStrings.push({
-      seq: sequence.slice(currentIndex, highlight.end),
-      highlight: 'forward',
-    });
-    currentIndex = highlight.end;
-  });
-  if (currentIndex < sequence.length) {
-    highStrings.push({
-      seq: sequence.slice(currentIndex, sequence.length),
-      highlight: 'none',
-    });
+    curStatus = newStat;
+    if (i === sequence.length - 1) {
+      const curString = sequence.slice(curStart);
+      highStrings.push({
+        seq: curString,
+        forward: curStatus.forward,
+        reverse: curStatus.reverse,
+      });
+    }
   }
   return highStrings;
 };
 
 export const cutSeqWithOligo = (sequence, oligo) => {
-  const indices = findAllOligoIndices(sequence, oligo);
   const start = new Date().getMilliseconds();
   const splitSeq = sequence.split(oligo);
   const revComp = getReverseComplement(oligo);
