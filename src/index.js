@@ -32,7 +32,7 @@ const getRandomString = (possible, length) => {
   }
   return temp;
 };
-const randomSeq = getRandomString('ACTG', 500);
+const randomSeq = getRandomString('ACTG', 200);
 store.dispatch({
   type: 'SET_SEQUENCE',
   sequence: randomSeq,

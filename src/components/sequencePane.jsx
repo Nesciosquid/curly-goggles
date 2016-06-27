@@ -40,6 +40,7 @@ export class SequencePane extends React.Component {
 
     const inputStyle = {
       width: '100%',
+      resize: 'none',
     };
 
     const highlightedStrings =

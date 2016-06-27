@@ -26,6 +26,14 @@ a {
   background-color: #B2EBF2;
 }
 
+.highlight-reverse {
+  background-color: #FFCDD2;
+}
+
+.highlight-both {
+  background-color: #D1C4E9;
+}
+
 .category-title-input-box {
   max-width: 80%;
 }

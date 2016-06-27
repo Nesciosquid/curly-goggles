@@ -1,15 +1,19 @@
 import React from 'react';
 
-export const HighlightedSequence = ({ highlightedStrings, onFocus}) => {
+export const HighlightedSequence = ({ highlightedStrings, onFocus }) => {
   const spans = [];
-  highlightedStrings.forEach((subString, index) => {
+  highlightedStrings.forEach((highString, index) => {
     let className = 'span-cloud ';
-    if (subString.highlight === 'forward') {
+    if (highString.forward && highString.reverse) {
+      className += 'highlight-both';
+    } else if (highString.forward && !highString.reverse) {
       className += 'highlight-forward';
+    } else if (!highString.forward && highString.reverse) {
+      className += 'highlight-reverse';
     }
 
     spans.push(
-      <div key={index} className={className}>{subString.seq}</div>
+      <div key={index} className={className}>{highString.seq}</div>
     );
   });
   return (
