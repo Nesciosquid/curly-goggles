@@ -91,7 +91,7 @@
 	  }
 	  return temp;
 	};
-	var randomSeq = getRandomString('ACTG', 500);
+	var randomSeq = getRandomString('ACTG', 200);
 	store.dispatch({
 	  type: 'SET_SEQUENCE',
 	  sequence: randomSeq
@@ -22051,11 +22051,13 @@
 	        border: '1px solid black',
 	        borderRadius: '5px',
 	        marginBottom: '20px',
-	        marginTop: '20px'
+	        marginTop: '20px',
+	        height: 'auto'
 	      };
 
 	      var inputStyle = {
-	        width: '100%'
+	        width: '100%',
+	        resize: 'none'
 	      };
 
 	      return _react2['default'].createElement(
@@ -22164,7 +22166,8 @@
 	      };
 
 	      var inputStyle = {
-	        width: '100%'
+	        width: '100%',
+	        resize: 'none'
 	      };
 
 	      var highlightedStrings = (0, _sequenceOperationsJs.getHightlightStrings)(this.props.value, this.props.oligo);
@@ -22233,16 +22236,20 @@
 	  var onFocus = _ref.onFocus;
 
 	  var spans = [];
-	  highlightedStrings.forEach(function (subString, index) {
+	  highlightedStrings.forEach(function (highString, index) {
 	    var className = 'span-cloud ';
-	    if (subString.highlight === 'forward') {
+	    if (highString.forward && highString.reverse) {
+	      className += 'highlight-both';
+	    } else if (highString.forward && !highString.reverse) {
 	      className += 'highlight-forward';
+	    } else if (!highString.forward && highString.reverse) {
+	      className += 'highlight-reverse';
 	    }
 
 	    spans.push(_react2['default'].createElement(
 	      'div',
 	      { key: index, className: className },
-	      subString.seq
+	      highString.seq
 	    ));
 	  });
 	  return _react2['default'].createElement(
@@ -22313,6 +22320,12 @@
 	  }return false;
 	};
 
+	var isInHighlight = function isInHighlight(highlight, index) {
+	  if (highlight.start <= index && highlight.end >= index) {
+	    return true;
+	  }return false;
+	};
+
 	var condenseHighlights = function condenseHighlights(highlights) {
 	  var condensed = [];
 	  var last = undefined;
@@ -22335,16 +22348,17 @@
 	  indices.forEach(function (index) {
 	    forwardHighlightedAreas.push({
 	      start: index,
-	      end: index + oligo.length
+	      end: index + oligo.length - 1
 	    });
 	  });
 	  reverseIndices.forEach(function (index) {
 	    reverseHighlightedAreas.push({
 	      start: index,
-	      end: index + oligo.length
+	      end: index + oligo.length - 1
 	    });
 	  });
 	  var condensedForward = condenseHighlights(forwardHighlightedAreas);
+
 	  var condensedReverse = condenseHighlights(reverseHighlightedAreas);
 	  return {
 	    forward: condensedForward,
@@ -22353,36 +22367,69 @@
 	};
 
 	exports.getHighlghtedAreas = getHighlghtedAreas;
+	var getHighlightStatus = function getHighlightStatus(index, forward, rev) {
+	  var f = false;
+	  var r = false;
+	  if (forward) {
+	    forward.forEach(function (highlight) {
+	      if (isInHighlight(highlight, index)) {
+	        f = true;
+	      }
+	    });
+	  }
+	  if (rev) {
+	    rev.forEach(function (highlight) {
+	      if (isInHighlight(highlight, index)) {
+	        r = true;
+	      }
+	    });
+	  }
+	  return {
+	    forward: f,
+	    reverse: r
+	  };
+	};
+
+	exports.getHighlightStatus = getHighlightStatus;
+	var statusesAreEqual = function statusesAreEqual(stat1, stat2) {
+	  return stat1 && stat2 && stat1.forward === stat2.forward && stat1.reverse === stat2.reverse;
+	};
+
+	exports.statusesAreEqual = statusesAreEqual;
 	var getHightlightStrings = function getHightlightStrings(sequence, oligo) {
 	  var highlights = getHighlghtedAreas(sequence, oligo);
-	  var currentIndex = 0;
+	  var curStart = 0;
+	  var curStatus = undefined;
 	  var highStrings = [];
-	  highlights.forward.forEach(function (highlight) {
-	    if (highlight.start > currentIndex) {
-	      highStrings.push({
-	        seq: sequence.slice(currentIndex, highlight.start),
-	        highlight: 'none'
-	      });
-	      currentIndex = highlight.start;
+
+	  for (var i = 0; i < sequence.length; i++) {
+	    var newStat = getHighlightStatus(i, highlights.forward, highlights.reversed);
+	    if (!statusesAreEqual(curStatus, newStat)) {
+	      if (curStatus) {
+	        var curString = sequence.slice(curStart, i);
+	        highStrings.push({
+	          seq: curString,
+	          forward: curStatus.forward,
+	          reverse: curStatus.reverse
+	        });
+	      }
+	      curStart = i;
 	    }
-	    highStrings.push({
-	      seq: sequence.slice(currentIndex, highlight.end),
-	      highlight: 'forward'
-	    });
-	    currentIndex = highlight.end;
-	  });
-	  if (currentIndex < sequence.length) {
-	    highStrings.push({
-	      seq: sequence.slice(currentIndex, sequence.length),
-	      highlight: 'none'
-	    });
+	    curStatus = newStat;
+	    if (i === sequence.length - 1) {
+	      var curString = sequence.slice(curStart);
+	      highStrings.push({
+	        seq: curString,
+	        forward: curStatus.forward,
+	        reverse: curStatus.reverse
+	      });
+	    }
 	  }
 	  return highStrings;
 	};
 
 	exports.getHightlightStrings = getHightlightStrings;
 	var cutSeqWithOligo = function cutSeqWithOligo(sequence, oligo) {
-	  var indices = findAllOligoIndices(sequence, oligo);
 	  var start = new Date().getMilliseconds();
 	  var splitSeq = sequence.split(oligo);
 	  var revComp = getReverseComplement(oligo);
@@ -22569,7 +22616,7 @@
 	};
 
 	var initState = {
-	  oligos: 'ATGC',
+	  oligos: 'ATG',
 	  sequence: 'ACCTTGATGCGGCGAT',
 	  result: {
 	    cuts: 0,
